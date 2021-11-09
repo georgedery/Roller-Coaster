@@ -1,0 +1,139 @@
+# Import internal library
+import codecademylib3
+
+# 1 
+# Import necessary libraries
+import pandas as pd
+from matplotlib import pyplot as plt
+
+
+# load rankings data
+wood = pd.read_csv('Golden_Ticket_Award_Winners_Wood.csv')
+steel = pd.read_csv('Golden_Ticket_Award_Winners_Steel.csv')
+# print(wood.head())
+# print(steel.head())
+
+# 2
+# Create a function to plot rankings over time for 1 roller coaster
+def coaster_rankings(name, park):
+  dfwood = wood[(wood['Name'] == name) & (wood['Park'] == park)]
+  plt.plot(dfwood['Year of Rank'], dfwood['Rank'], color='indigo', marker='*')
+  plt.ylabel('Rank')
+  plt.xlabel('Year of Rank')
+  plt.legend([name])
+  plt.show()
+  
+# 3
+# Create a plot of El Toro ranking over time
+coaster_rankings('El Toro', 'Six Flags Great Adventure')
+
+
+# Create a plot of El Toro and Boulder dash hurricanes
+def coaster_rankings(name1, name2, park1, park2):
+  dfwood1 = wood[(wood['Name'] == name1) & (wood['Park'] == park1)]
+  dfwood2 = wood[(wood['Name'] == name2) & (wood['Park'] == park2)]
+  plt.plot(dfwood1['Year of Rank'], dfwood1['Rank'], color='green', marker='o')
+  plt.plot(dfwood2['Year of Rank'], dfwood2['Rank'], color='blue', marker='o')
+  plt.legend([name1, name2])
+  plt.xlabel('Year of Rank')
+  plt.ylabel('Rank')
+  plt.show()
+  plt.clf()
+coaster_rankings('El Toro', 'Boulder Dash', 'Six Flags Great Adventure', 'Lake Compounce')
+
+# 4
+# Create a function to plot top n rankings over time
+def plot_top_n(rankings_df, n):
+  top_n_rankings = rankings_df[rankings_df['Rank'] <= n]
+  f, ax = plt.subplots(figsize=(10,8))
+  for coaster in set(top_n_rankings['Name']):
+    coaster_rankings = top_n_rankings[top_n_rankings['Name'] == coaster]
+  ax.plot(coaster_rankings['Year of Rank'],coaster_rankings['Rank'],label=coaster, color='brown', marker='s')
+  ax.set_yticks(range(1,n+1))
+  plt.title('Top '+str(n)+" Roller Coasters' Rankings")
+  plt.xlabel('Year of Rank')
+  plt.ylabel('Rank')
+  plt.show()
+  plt.clf()
+
+
+# Create a plot of top n rankings over time
+plot_top_n(wood, 5)
+
+# 5
+# load roller coaster data
+roller_coasters = pd.read_csv('roller_coasters.csv')
+print(roller_coasters.head())
+
+# 6
+# Create a function to plot histogram of column values
+def plot_a_hist(dataframe, column):
+  datas_to_plot = dataframe[column]
+  plt.hist(datas_to_plot.dropna(), normed = True)
+  plt.title("The Distribution of " + column + " for Roller Coasters")
+  plt.xlabel(column)
+  plt.ylabel("Frequency")
+  plt.show()
+  plt.clf()
+
+# Create histogram of roller coaster speed
+plot_a_hist(roller_coasters, "speed")
+
+# Create histogram of roller coaster length
+plot_a_hist(roller_coasters, "length")
+
+# Create histogram of roller coaster number of inversions
+plot_a_hist(roller_coasters, "num_inversions")
+
+
+# Create a histogram of roller coaster height
+plot_a_hist(roller_coasters, "height")
+
+
+# 7
+# Create a function to plot inversions by coaster at park
+def plot_a_bar(dataframe, park_name):
+  park_data = dataframe[dataframe.park == park_name]
+  num_inversions_data = park_data.num_inversions
+  roller_coaster_name = park_data.name
+  plt.bar(range(len(roller_coaster_name)), num_inversions_data)
+  plt.title('Number of Inversions for each Roller Coaster')
+  plt.xlabel('Roller Coaster Name')
+  plt.ylabel('Number of Inversions')
+  ax = plt.subplot()
+  ax.set_xticks(range(len(roller_coaster_name)))
+  ax.set_xticklabels(roller_coaster_name, rotation = 90)
+  plt.show()
+  plt.clf()
+# Create barplot of inversions by roller coasters
+plot_a_bar(roller_coasters, 'Bobbejaanland')
+
+# 8
+# Create a function to plot a pie chart of status.operating
+def plot_pie(dataframe):
+  operating_coasters = dataframe[dataframe.status == 'status.operating']
+  closed_coasters = dataframe[dataframe.status == 'status.closed.definitely']
+  num_of_operating = len(operating_coasters)
+  num_of_closed = len(closed_coasters)
+  plt.pie([num_of_operating, num_of_closed], autopct='%d%%')
+  plt.axis('equal')
+  plt.show()
+  plt.clf()
+
+# Create pie chart of roller coasters
+plot_pie(roller_coasters)
+
+# 9
+# Create a function to plot scatter of any two columns
+def scatter(dataframe, column1, column2):
+  data_column1 = dataframe[column1]
+  data_column2 = dataframe[column2]
+  plt.scatter(data_column1, data_column2)
+  plt.title('Relationship between ' +column1 + ' and ' + column2)
+  plt.xlabel(column1)
+  plt.ylabel(column2)
+  plt.show()
+  
+
+# Create a scatter plot of roller coaster height by speed
+scatter(roller_coasters, 'height', 'speed')
